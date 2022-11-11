@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VMC Chat</title> 
+    <link rel="stylesheet" href="/css/chat.css">
+  </head>
+  <body>
+    <div id="header">
+      <h1 class="header">VMC Chat</h1>
+      <form method="get" action="http://localhost:3000/user/logout">
+        <button type="submit" class="btn">logout</button>
+      </form>
+    </div> 
+  </div>
+    <hr>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        var messages = document.getElementById('messages');
+        var form = document.getElementById("form");
+        var input = document.getElementById("input");
+
+      
+      
+
+        // lister submit form
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            //get message text
+            if(input.value) {
+                socket.emit('chat massage', input.value);
+                input.value = '';
+            }
+        });
+
+        //join chat 
+        socket.emit('joinRoom',  function(userName){
+
+        });
+
+        // insert message use 
+        socket.on('chat message', function(msg) {
+            var item = document.createElement('li');
+            item.innerHTML =  `
+              <p> ${msg.username} : ${msg.time}</p>
+              <p> ${msg.text}</p>
+            `;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+        
+        // insert message server
+        socket.on('message', (message)=> {
+          var item = document.createElement('li');
+          item.innerHTML =  `
+              <p> ${message.username} : ${message.time}</p>
+              <p> ${message.text}</p>
+            `;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+     
+    </script>
+  </body>
+</html>
